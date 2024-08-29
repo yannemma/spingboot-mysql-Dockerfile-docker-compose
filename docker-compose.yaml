@@ -1,0 +1,31 @@
+version: '3.3'
+
+services:
+  mysql-standalone:
+    image: mysql:8.0
+    container_name: mysql-standalone
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: HMS
+      MYSQL_PASSWORD: admin
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  springboot-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: docker-springboot
+    ports:
+      - "8086:8086"
+    depends_on:
+      - mysql-standalone
+    volumes:
+      - /tmp:/tmp
+    links:
+      - mysql-standalone:mysql
+
+volumes:
+  mysql_data:
